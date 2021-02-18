@@ -51,7 +51,6 @@ def write_file(list_dicts, text, dir_exists = False):
     write volumes to new directory
     :param list_dicts: list_of dicts
     """
-    #list_dicts = process_all_txt_files(paths)
     
     if dir_exists == True:
         replace_txt = text.replace("../text/", "")

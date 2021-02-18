@@ -46,25 +46,33 @@ def process_all_txt_files(paths):
 
     return list_dicts
 
-def write_file(list_dicts, text):
+def write_file(list_dicts, text, dir_exists = False):
     """
     write volumes to new directory
     :param list_dicts: list_of dicts
     """
-    #list_dicts = process_all_txt_files(paths)    
-    for item in list_dicts:
+    #list_dicts = process_all_txt_files(paths)
+    
+    if dir_exists == True:
         replace_txt = text.replace("../text/", "")
         basename = replace_txt+".json"
+    
         directory = "test-dir"
         parent_dir = '../text/'
-    
-        path = os.path.join(parent_dir, directory) 
+        path = os.path.join(parent_dir, directory)
         completeName = os.path.join(path, basename)
     
         jsondumps = json.dumps(list_dicts)
         jsonfile = open(completeName, "w")
         jsonfile.write(jsondumps)
         jsonfile.close()
+    
+    if dir_exists == False:
+        directory = "test-dir"
+        if os.path.isdir(directory) == True:
+            print('File exists: Set param overwrite_exisiting_conll_file to True if you want to overwrite it')
+        elif os.path.isdir(directory) == False:
+            os.mkdir(directory)
             
 def main():
     """
@@ -81,4 +89,3 @@ def main():
         write_file(list_dicts, text)
 
 main()
-    

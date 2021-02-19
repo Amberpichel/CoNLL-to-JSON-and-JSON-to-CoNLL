@@ -1,14 +1,21 @@
 import json
 import glob
 import os 
+import sys
+
+#NOTES : 
+#usage command line: conll_json_arg.py path-to-conllfiles+.conll path-to-conllfiles
 
 def get_paths(input_folder):
     """
     Stores all .txt files in a list
     Returns a list of strings of filepaths from the Text (volumes) folder
+    :param inputfolder: inputfolder used in main
     """
     list_files = []
-    for filename in glob.glob('../text/*.conll'):
+    conll_folder = sys.argv[1] #glob.glob('../**/*.conll')
+    
+    for filename in conll_folder:
         list_files.append(filename)
 
     return list_files
@@ -17,6 +24,7 @@ def load_text(txt_path):
     """
     Opens the container en reads the elements(strings)
     Returns a string
+    :param txt path: list with filepaths
     """
     with open(txt_path, 'rt') as infile:
         content = infile.readlines()
@@ -27,7 +35,7 @@ def process_all_txt_files(paths):
     """
     given a list of txt_paths
     -process each
-    :param list txt_paths: list of paths to txt files 
+    :param paths: list of content volume
     :return: list of dicts
     """
     list_dicts = []
@@ -45,45 +53,39 @@ def process_all_txt_files(paths):
 
     return list_dicts
 
-def write_file(list_dicts, text, dir_exists = False):
+def write_file(list_dicts, input_folder, text):
     """
     write volumes to new directory
     :param list_dicts: list_of dicts
+    :param input_folder: folder with CONLL files
+    :param text: pathname of CONLL file
     """
+    directory = "json-dir"
     
-    if dir_exists == True:
-        replace_txt = text.replace("../text/", "")
-        basename = replace_txt+".json"
+    #check if directoy exists, if not create it
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     
-        directory = "test-dir"
-        parent_dir = '../text/'
-        path = os.path.join(parent_dir, directory)
-        completeName = os.path.join(path, basename)
+    base = os.path.basename(text)[:-52]
+    json_str = '.json'
+    basename = base + json_str
+    path = os.path.join (input_folder, directory)
+    completeName = os.path.join(path, basename)
     
-        jsondumps = json.dumps(list_dicts)
-        jsonfile = open(completeName, "w")
-        jsonfile.write(jsondumps)
-        jsonfile.close()
-    
-    if dir_exists == False:
-        directory = "test-dir"
-        if os.path.isdir(directory) == True:
-            print('File exists: Set param overwrite_exisiting_conll_file to True if you want to overwrite it')
-        elif os.path.isdir(directory) == False:
-            os.mkdir(directory)
+    jsondumps = json.dumps(list_dicts)
+    jsonfile = open(completeName, "w")
+    jsonfile.write(jsondumps)
+    jsonfile.close()
             
 def main():
-    """
-    convert from conll to json for all the separate volumes
-    """
     
-    output_dir = '../test_dir'
-    input_folder = '../text'
+    input_folder = sys.argv[2] #'../text'
 
     txt_path = get_paths(input_folder)
     for text in txt_path:
         paths = load_text(text)
         list_dicts = process_all_txt_files(paths)
-        write_file(list_dicts, text)
+        write_file(list_dicts, input_folder, text)
 
-main()
+if __name__ == "__main__":
+    main()

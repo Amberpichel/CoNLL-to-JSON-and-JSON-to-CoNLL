@@ -66,7 +66,7 @@ def write_file(list_dicts, input_folder, text):
     if not os.path.exists(directory):
         os.makedirs(directory)
     
-    base = os.path.basename(text)[:-52]
+    base = os.path.basename(text)
     json_str = '.json'
     basename = base + json_str
     path = os.path.join (input_folder, directory)

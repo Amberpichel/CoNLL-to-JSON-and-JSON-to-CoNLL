@@ -4,7 +4,7 @@ import os
 import sys
 
 #NOTES : 
-#usage command line: conll_json_arg.py path-to-conllfiles+.conll path-to-conllfiles
+#usage command line: conll_json_arg.py 'glob.glob('../**/*.conll' path-to-conllfiles
 
 def get_paths(input_folder):
     """

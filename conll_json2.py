@@ -3,7 +3,7 @@ import glob
 import os 
 import sys
 
-#NOTES =: 
+#NOTES: 
 #usage command line: conll_json_arg.py 'glob.glob('../**/*.conll)' path-to-conllfiles
 
 def get_paths(input_folder):

@@ -3,8 +3,7 @@ import glob
 import os 
 import sys
 
-#NOTES: 
-#usage command line: conll_json_arg.py 'glob.glob('../**/*.conll)' path-to-conllfiles
+#usage command line: python json_conll.py input_folder
 
 def get_paths(input_folder):
     """
@@ -13,7 +12,7 @@ def get_paths(input_folder):
     :param inputfolder: inputfolder used in main
     """
     list_files = []
-    conll_folder = sys.argv[1] #glob.glob('../**/*.conll')
+    conll_folder = glob.glob(input_folder + '/*.conll')
     
     for filename in conll_folder:
         list_files.append(filename)
@@ -39,6 +38,7 @@ def process_all_txt_files(paths):
     :return: list of dicts
     """
     list_dicts = []
+    #strip newline, split on space char and make components for the dictionary
     for line in paths:
         components = line.rstrip('\n').split()
         if len(components) > 0:
@@ -62,16 +62,20 @@ def write_file(list_dicts, input_folder, text):
     """
     directory = "json-dir"
     
-    #check if directoy exists, if not create it
+    #check if directoy exists, if not make it
     if not os.path.exists(directory):
         os.makedirs(directory)
     
-    base = os.path.basename(text)
+    #get basename of the path and change extension to json
+    base = os.path.basename(text)[:-6]
     json_str = '.json'
     basename = base + json_str
+    
+    #put in the new directory
     path = os.path.join (input_folder, directory)
     completeName = os.path.join(path, basename)
     
+    #write file to json format
     jsondumps = json.dumps(list_dicts)
     jsonfile = open(completeName, "w")
     jsonfile.write(jsondumps)
@@ -79,8 +83,9 @@ def write_file(list_dicts, input_folder, text):
             
 def main():
     
-    input_folder = sys.argv[2] #'../text'
-
+    input_folder = sys.argv[1]
+    
+    #loop over every pathname and call functions for each path separately
     txt_path = get_paths(input_folder)
     for text in txt_path:
         paths = load_text(text)
